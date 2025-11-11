@@ -1,0 +1,92 @@
+[
+    {
+        "model": "api.vehiculo",
+        "pk": "ABC123",
+        "fields": {
+            "matricula": "ABC123"
+        }
+    },
+    {
+        "model": "api.turno",
+        "pk": 1,
+        "fields": {
+            "fecha_hora": "2025-11-14T19:00:00Z",
+            "vehiculo": "ABC123",
+            "estado": "DISPONIBLE"
+        }
+    },
+    {
+        "model": "api.turno",
+        "pk": 2,
+        "fields": {
+            "fecha_hora": "2025-11-14T18:00:00Z",
+            "vehiculo": "ABC123",
+            "estado": "DISPONIBLE"
+        }
+    },
+    {
+        "model": "api.turno",
+        "pk": 3,
+        "fields": {
+            "fecha_hora": "2025-11-11T18:00:00Z",
+            "vehiculo": "ABC123",
+            "estado": "COMPLETADO"
+        }
+    },
+    {
+        "model": "api.puntochequeo",
+        "pk": 1,
+        "fields": {
+            "nombre": "Luces"
+        }
+    },
+    {
+        "model": "api.puntochequeo",
+        "pk": 2,
+        "fields": {
+            "nombre": "Frenos"
+        }
+    },
+    {
+        "model": "api.puntochequeo",
+        "pk": 3,
+        "fields": {
+            "nombre": "Neumáticos"
+        }
+    },
+    {
+        "model": "api.puntochequeo",
+        "pk": 4,
+        "fields": {
+            "nombre": "Aceite del motor"
+        }
+    },
+    {
+        "model": "api.puntochequeo",
+        "pk": 5,
+        "fields": {
+            "nombre": "Refrigerante"
+        }
+    },
+    {
+        "model": "api.puntochequeo",
+        "pk": 6,
+        "fields": {
+            "nombre": "Batería"
+        }
+    },
+    {
+        "model": "api.puntochequeo",
+        "pk": 7,
+        "fields": {
+            "nombre": "Limpiaparabrisas"
+        }
+    },
+    {
+        "model": "api.puntochequeo",
+        "pk": 8,
+        "fields": {
+            "nombre": "Suspensión y dirección"
+        }
+    }
+]
