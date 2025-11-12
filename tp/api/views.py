@@ -58,6 +58,36 @@ class ConfirmarTurnoView(APIView):
         return Response({'status': 'Turno confirmado exitosamente.'}, status=status.HTTP_200_OK)
 
 
+class EstadoVehiculoView(APIView):
+    """
+    Devuelve el estado del vehículo (SEGURO o RECHEQUEO) basado en su última revisión.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, patente, *args, **kwargs):
+        # Buscar el vehículo por matrícula
+        try:
+            vehiculo = Vehiculo.objects.get(matricula=patente)
+        except Vehiculo.DoesNotExist:
+            return Response({'error': 'Vehículo no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Buscar la última revisión completada del vehículo
+        ultima_revision = Revision.objects.filter(
+            turno__vehiculo=vehiculo,
+            turno__estado=Turno.EstadoTurno.COMPLETADO
+        ).order_by('-fecha_hora').first()
+
+        if not ultima_revision:
+            return Response({'error': 'No hay revisiones para este vehículo.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = EstadoVehiculoSerializer({
+            'matricula': patente,
+            'estado': ultima_revision.estado_final
+        })
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 # --- Endpoints Privados (para el Inspector) ---
 
 class CrearChequeoView(APIView):

@@ -13,6 +13,9 @@ urlpatterns = [
     # GET /api/vehiculos/ -> Devuelve la lista de vehículos registrados
     path('vehiculos/', VehiculosListView.as_view()),
 
+    # GET /api/vehicles/<patente>/ -> Devuelve el estado del vehículo
+    path('vehicles/<str:patente>/', EstadoVehiculoView.as_view()),
+
     # --- URLs de Autenticación ---
     # POST /api/login/ -> Autentica un inspector y devuelve un token
     path('login/', obtain_auth_token, name='api-login'),

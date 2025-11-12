@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Esperar a que PostgreSQL esté listo
+echo "Esperando a que PostgreSQL esté listo..."
+until python manage.py check --database default 2>&1 | grep -q "System check identified\|no issues"; do
+  echo "PostgreSQL no está listo todavía - esperando..."
+  sleep 2
+done
+
+echo "PostgreSQL está listo. Creando y ejecutando migraciones..."
+
+# Crear migraciones si no existen
+python manage.py makemigrations
+
 # Ejecutar migraciones
 python manage.py migrate
 

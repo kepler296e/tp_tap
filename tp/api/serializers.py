@@ -20,6 +20,11 @@ class TurnoConfirmarSerializer(serializers.Serializer):
     matricula = serializers.CharField(max_length=20)
 
 
+class EstadoVehiculoSerializer(serializers.Serializer):
+    matricula = serializers.CharField()
+    estado = serializers.CharField()
+
+
 # --- Serializadores para el flujo del INSPECTOR (Privados) ---
 
 class ResultadoPuntoCreateSerializer(serializers.ModelSerializer):
