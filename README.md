@@ -4,7 +4,11 @@
 - [Requerimientos funcionales](#requerimientos-funcionales)
 - [Arquitectura](#arquitectura)
 - [Patrones de diseño](#patrones-de-diseño)
+  - [Inyección de dependencias](#inyección-de-dependencias)
+  - [MVC/MVT](#mvcmvt)
 - [Principios de diseño](#principios-de-diseño)
+  - [Separación de responsabilidades](#separación-de-responsabilidades)
+  - [Inversión de dependencias](#inversión-de-dependencias)
 - [Metodología de desarrollo](#metodología-de-desarrollo)
 - [Base de datos](#base-de-datos)
   - [Diagrama de clases](#diagrama-de-clases)
@@ -48,39 +52,29 @@ Si un mismo servidor combinara la lógica de negocio y la capa de datos, sería 
 
 **Microservicios vs. Monolito**: Este proyecto sigue una arquitectura monolítica, en contraste, una arquitectura de microservicios dividiría la aplicación en servicios independientes (por ejemplo, un servicio para gestión de turnos, otro para revisiones, etc.), lo que puede ser beneficioso para aplicaciones muy grandes y complejas.
 
-```
-ARQUITECTURA
-    ↓
-    ├─ Capa de Presentación
-    ├─ Capa de Negocio  ← PATRONES (Soluciones concretas)
-    │   ├─ views.py         └─ Inyección de Dependencias
-    │   └─ services.py      └─ Service Layer
-    │        ↑
-    │        └─ PRINCIPIOS (Guías generales)
-    │           └─ Separación de responsabilidades
-    └─ Capa de Datos
-```
-
 ## Patrones de diseño
 Soluciones ya probadas para problemas comunes.
 
 ### Inyección de dependencias
-Desacoplamos la lógica de negocio para procesar una revisión en la clase `RevisionService` y lo inyectamos como dependencia en la vista `CrearChequeoView` (el controlador). Esto permite cambiar la lógica de negocio (por ejemplo, modificar los umbrales de puntaje) sin tocar el código del controlador, manteniendo así la separación de responsabilidades.
+Se desacopla la lógica de negocio en la clase `RevisionService` y se inyecta como dependencia en el constructor de la vista `CrearChequeoView` (el controlador). Esto permite cambiar la lógica de negocio (por ejemplo, modificar los umbrales de puntaje) sin tocar el código del controlador, manteniendo así la separación de responsabilidades.
 
-- **Controlador** En Django, las vistas actúan como controladores. Manejan las peticiones HTTP, validan datos de entrada y devuelven respuestas.
+### MVC/MVT
+Django usa el patrón Model View Template (MVT):
 
-- **Servicio** Contiene la lógica de negocio pura, aislada de Django. En este caso, `RevisionService.calcular_estado_final()` decide si un vehículo es seguro o necesita rechequeo basándose en los puntajes.
+- **Model**: Define la estructura de datos (`Vehiculo`, `Turno`, `Revision`, `ResultadoChequeo`).
+- **View**: Procesa peticiones HTTP y coordina la lógica de negocio.
+- **Template**: Como es una API REST, usamos **serializers** para transformar datos entre JSON y modelos Django.
 
 ## Principios de diseño
 ### Separación de responsabilidades
-Cada clase y módulo tiene una única responsabilidad bien definida:
-- **Views**: Manejan las peticiones y respuestas HTTP.
-- **Services**: Contienen la lógica de negocio.
-- **Models**: Definen la estructura de los datos y las relaciones.
-- **Serializers**: Transforman datos entre formatos (JSON ↔ Modelos Django).
-- **URLs**: Definen las rutas de la API.
-- **Tests**: Validan el comportamiento del sistema.
-- **Settings**: Configuran la aplicación (base de datos, autenticación, etc.).
+Cada módulo tiene una única responsabilidad:
+- **Views**: Peticiones HTTP
+- **Services**: Lógica de negocio
+- **Models**: Estructura de datos
+- **Serializers**: Transformación JSON a Modelos
+
+### Inversión de dependencias
+La vista `CrearChequeoView` (alto nivel) inyecta `RevisionService` como dependencia, delegando la lógica de negocio al servicio (bajo nivel). Esto permite cambiar la lógica de cálculo sin tocar el controlador.
 
 ## Metodología de desarrollo
 **Cascada**: Proceso secuencial y lineal:
@@ -92,7 +86,7 @@ Cada clase y módulo tiene una única responsabilidad bien definida:
 6. Mantenimiento
 
 ## Base de datos
-**¿Por qué una base relacional?**: En nuestro proyecto, la estructura de datos es rígida, bien definida, y existen relaciones fuertes entre sus entidades. Además, la integridad de los datos es crítica, ya que varios usuarios pueden estar interactuando con los mismos turnos simultáneamente. Por esta razón, necesitamos utilizar transacciones para evitar que dos usuarios confirmen el mismo turno.
+**¿Por qué una base relacional?**: La estructura de datos es rígida, bien definida, y existen relaciones fuertes entre sus entidades. Además, la integridad de los datos es crítica, ya que varios usuarios pueden estar interactuando con los mismos turnos simultáneamente. Por esta razón, necesitamos utilizar transacciones para evitar que dos usuarios confirmen el mismo turno.
 
 **PostgreSQL**: Aunque para el desarrollo inicial Django funciona bien con SQLite, se opta por PostgreSQL pensando en un entorno más realista y de producción. Es una base de datos relacional potente, de código abierto y muy fiable, ideal para asegurar la integridad de los datos entre vehículos, dueños, turnos y revisiones.
 
